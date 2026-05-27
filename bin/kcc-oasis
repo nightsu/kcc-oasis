@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_PATH="$0"
+while [ -L "$SCRIPT_PATH" ]; do
+  SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)"
+  LINK_TARGET="$(readlink "$SCRIPT_PATH")"
+  case "$LINK_TARGET" in
+    /*) SCRIPT_PATH="$LINK_TARGET" ;;
+    *) SCRIPT_PATH="$SCRIPT_DIR/$LINK_TARGET" ;;
+  esac
+done
+
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$SCRIPT_PATH")/.." && pwd)"
+PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+
+if [ ! -x "$PYTHON_BIN" ]; then
+  echo "Missing Python environment: $PYTHON_BIN" >&2
+  echo "Run: $ROOT_DIR/scripts/bootstrap.sh" >&2
+  exit 2
+fi
+
+PYTHONPATH="$ROOT_DIR/src:$ROOT_DIR/vendor/kcc${PYTHONPATH+:$PYTHONPATH}" \
+  exec "$PYTHON_BIN" -m kcc_oasis "$@"
