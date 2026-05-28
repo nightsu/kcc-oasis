@@ -1,6 +1,7 @@
 import unittest
 from pathlib import Path
 
+from kcc_oasis.bootstrap import requirements_file
 from kcc_oasis.cli import build_kcc_command, normalize_format, resolve_profile
 
 
@@ -94,6 +95,20 @@ class CommandTests(unittest.TestCase):
                 "2",
                 "/books/vol1.cbz",
             ],
+        )
+
+
+class BootstrapRequirementTests(unittest.TestCase):
+    def test_default_mode_uses_cli_only_requirements(self):
+        self.assertEqual(
+            requirements_file(Path("/project"), full_mode=False),
+            Path("/project/requirements-cli.txt"),
+        )
+
+    def test_full_mode_uses_upstream_kcc_requirements(self):
+        self.assertEqual(
+            requirements_file(Path("/project"), full_mode=True),
+            Path("/project/vendor/kcc/requirements.txt"),
         )
 
 
