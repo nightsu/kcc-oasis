@@ -81,6 +81,16 @@ bin/kcc-oasis "/path/to/comic.cbz" -- --cropping 2
 This project vendors KCC source code under `vendor/kcc` and creates its own
 Python virtual environment under `.venv`.
 
+`scripts/bootstrap.sh` installs CLI-only Python dependencies by default. This
+keeps the command-line wrapper lightweight and does not install KCC's GUI-only
+Qt dependency.
+
+To install the full upstream KCC dependency set instead, run:
+
+```sh
+KCC_OASIS_FULL=1 scripts/bootstrap.sh
+```
+
 KCC still expects system extraction tools for archives. On macOS, install them
 with Homebrew:
 
